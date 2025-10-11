@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ComingSoon from "./components/ComingSoon";
+import PaymentStatus from "./components/PaymentStatus";
+import BarcodeInput from "./components/BarcodeInput";
+import BarcodeIframe from "./components/BarcodeIframe";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="*" element={<ComingSoon />} />
+        <Route path="/" element={<ComingSoon />} />
+        <Route path="/paymentStatus" element={<PaymentStatus />} /> */}
+        <Route
+          path="/scanBarcode"
+          element={<BarcodeInput handleDetected={() => {}} />}
+        />
+        <Route path="/" element={<BarcodeIframe />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
