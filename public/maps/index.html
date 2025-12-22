@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>Location Map</title>
+    <style>
+      html,
+      body,
+      #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmbyaQLkdJzXnVvZQsBJU_f50YDyD6_ww"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      let lat = parseFloat(urlParams.get("lat")) || 30.03104122832516;
+      let lng = parseFloat(urlParams.get("lng")) || 31.240659768561887;
+      const radius = parseFloat(urlParams.get("radius")) || 100;
+      const clickable = urlParams.get("clickable") === "true";
+      const lang = urlParams.get("lang") || "en";
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat, lng },
+        zoom: 13,
+      });
+
+      const marker = new google.maps.Marker({ position: { lat, lng }, map });
+      const circle = new google.maps.Circle({
+        map,
+        center: { lat, lng },
+        radius,
+        fillColor: "#007bff33",
+        strokeColor: "#007bff",
+        strokeWeight: 1,
+      });
+
+      if (clickable) {
+        map.addListener("click", function (e) {
+          lat = e.latLng.lat();
+          lng = e.latLng.lng();
+          marker.setPosition({ lat, lng });
+          circle.setCenter({ lat, lng });
+
+          // ✅ send message to React Native
+          window.ReactNativeWebView.postMessage(
+            JSON.stringify({ lat, lng, lang })
+          );
+        });
+      }
+
+      // Listen for messages from React Native
+      document.addEventListener("message", function (event) {
+        const data = JSON.parse(event.data);
+        if (data.lat && data.lng) {
+          lat = data.lat;
+          lng = data.lng;
+          map.setCenter({ lat, lng });
+          marker.setPosition({ lat, lng });
+          circle.setCenter({ lat, lng });
+        }
+        if (data.lang) {
+          console.log("Language received in WebView:", data.lang);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+{
+  "termsAndConditions": {
+    "title": "Terms & Conditions",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "By using Branding Mart E-Shop, you agree to comply with our terms and conditions. Please read them carefully."
+      },
+      {
+        "type": "subtitle",
+        "text": "User Responsibilities"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Provide accurate information during registration and checkout.",
+          "Ensure security of your account credentials.",
+          "Abide by all applicable laws and regulations."
+        ]
+      }
+    ]
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "This privacy policy explains how we collect, use, and protect your information."
+      },
+      {
+        "type": "subtitle",
+        "text": "Information We Collect"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Name and contact information",
+          "Demographics",
+          "Purchase history and preferences",
+          "Other information related to surveys or promotions"
+        ]
+      },
+      {
+        "type": "subtitle",
+        "text": "How We Use Your Information"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Provide and improve our services",
+          "Process transactions and orders",
+          "Send promotional information",
+          "Personalize your shopping experience"
+        ]
+      },
+      {
+        "type": "subtitle",
+        "text": "Security"
+      },
+      {
+        "type": "paragraph",
+        "text": "We implement appropriate technical and managerial measures to safeguard your information from unauthorized access."
+      },
+      {
+        "type": "subtitle",
+        "text": "Cookies"
+      },
+      {
+        "type": "paragraph",
+        "text": "Cookies help us improve website functionality and personalize content."
+      },
+      {
+        "type": "subtitle",
+        "text": "Third-Party Links"
+      },
+      {
+        "type": "paragraph",
+        "text": "Our website may contain links to third-party sites. We are not responsible for their privacy practices."
+      }
+    ]
+  },
+  "salesPolicy": {
+    "title": "Sale Policy",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "All sales are subject to availability and pricing may change without notice."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Products are sold as described.",
+          "Promotions and discounts are valid only during specified periods."
+        ]
+      }
+    ]
+  },
+  "payments": {
+    "title": "Payments",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "We accept payments via credit/debit cards, bank transfers, and other approved methods."
+      }
+    ]
+  },
+  "refunds": {
+    "title": "Refunds",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Refunds are processed according to our return policy."
+      },
+      {
+        "type": "subtitle",
+        "text": "Cash and Points Refund"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Cash refunds are allowed for payments made in cash.",
+          "Online payments are refunded to the original payment method.",
+          "Points used for purchases cannot be refunded in cash; they will return as store credit."
+        ]
+      }
+    ]
+  },
+  "returns": {
+    "title": "Returns",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Products can be returned within 14 days, provided they are in original condition with packaging intact."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Return requests must be submitted through your account.",
+          "Refunds follow the rules specified under Refunds section.",
+          "Items damaged by the customer are not eligible for return."
+        ]
+      }
+    ]
+  },
+  "financialAccount": {
+    "title": "Financial Account & Loyalty Points",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "All transactions, credits, and refunds are recorded in the customer account for tracking purposes."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Points earned from purchases can only be used as store credit.",
+          "Points cannot be redeemed for cash unless specified in special promotions.",
+          "Credits are non-transferable and valid for 12 months."
+        ]
+      }
+    ]
+  }
+}

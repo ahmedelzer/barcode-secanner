@@ -29,7 +29,7 @@ const BarcodeScannerRedirect = () => {
 
   const goToScanner = () => {
     window.open(
-      "https://ihs-solutions.com:7552/scanbarcode",
+      "https://famous-treacle-f7ac8c.netlify.app/",
       "scannerPopup",
       "width=400,height=600"
     );

@@ -20,7 +20,16 @@ const BarcodeInput = ({ handleDetected }) => {
           return;
         }
         setCameras(devices);
-        setSelectedCameraId(devices[0].id); // start with first camera
+
+        // ✅ Prefer back camera if available
+        const backCam = devices.find(
+          (d) =>
+            d.label.toLowerCase().includes("back") ||
+            d.label.toLowerCase().includes("rear") ||
+            d.label.toLowerCase().includes("environment")
+        );
+
+        setSelectedCameraId(backCam ? backCam.id : devices[0].id);
       } catch (err) {
         console.error("Error getting cameras:", err);
         setError("Unable to access camera list. Check browser permissions.");
@@ -91,16 +100,6 @@ const BarcodeInput = ({ handleDetected }) => {
     await stopScanner();
     setSelectedCameraId(id);
   };
-  // ✅ Test value after 2 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const testValue = "TEST-12345";
-      setBarcodeValue(testValue);
-      console.log("✅ Test value set:", testValue);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
   useEffect(() => {
     if (barcodeValue) {
       if (window.opener) {
@@ -124,7 +123,8 @@ const BarcodeInput = ({ handleDetected }) => {
       {!error && (
         <div
           id={scannerId}
-          className="border-2 border-gray-300 rounded-md w-[320px] h-[240px]"
+          style={{ maxHeight: "700px", minHeight: "350px" }}
+          className="border-2 border-gray-300 rounded-md w-[320px]"
         ></div>
       )}
 
@@ -153,7 +153,27 @@ const BarcodeInput = ({ handleDetected }) => {
           ))}
         </div>
       )}
-      <div className=" tex-lg">{barcodeValue}</div>
+
+      {/* Show scanned value */}
+      <div className="text-lg mt-4"></div>
+
+      {/* ✅ Show close button only after scan */}
+      {barcodeValue && (
+        <button
+          onClick={async () => {
+            try {
+              await stopScanner(); // Stop camera
+            } catch (err) {
+              console.warn("Scanner already stopped:", err);
+            }
+            window.close(); // Close popup window
+          }}
+          className="mt-4 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg"
+          title="Close Scanner"
+        >
+          ✅ {barcodeValue}
+        </button>
+      )}
     </div>
   );
 };

@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ComingSoon from "./components/ComingSoon";
 import PaymentStatus from "./components/PaymentStatus";
 import BarcodeInput from "./components/BarcodeInput";
-import BarcodeIframe from "./components/BarcodeIframe";
+import BarcodeScannerRedirect from "./components/BarcodeScannerRedirect";
+import Terms from "./components/Terms";
 
 function App() {
   return (
@@ -16,7 +17,10 @@ function App() {
           path="/scanBarcode"
           element={<BarcodeInput handleDetected={() => {}} />}
         />
-        <Route path="/" element={<BarcodeIframe />} />
+        <Route path="*" element={<ComingSoon />} />
+        <Route path="/" element={<ComingSoon />} />
+        <Route path="/paymentStatus" element={<PaymentStatus />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
     </BrowserRouter>
   );
