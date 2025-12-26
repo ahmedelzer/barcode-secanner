@@ -5,6 +5,8 @@ import PaymentStatus from "./components/PaymentStatus";
 import BarcodeInput from "./components/BarcodeInput";
 import BarcodeScannerRedirect from "./components/BarcodeScannerRedirect";
 import Terms from "./components/Terms";
+import AccountDeletion from "./components/AccountDeletion";
+import RefundPolicy from "./components/RefundPolicy";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/" element={<ComingSoon />} />
         <Route path="/paymentStatus" element={<PaymentStatus />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/account-deletion" element={<AccountDeletion />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
       </Routes>
     </BrowserRouter>
   );

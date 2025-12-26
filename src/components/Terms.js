@@ -1,6 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import policies from "./privacyPolicy.json";
+import { useSearchParams } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import { DeepMerge } from "../utils/DeepMerge";
 export default function Terms() {
+  const [policiesLocalize, setPoliciesLocalize] = useState(policies);
+  const [searchParams] = useSearchParams();
+
+  const projectName = searchParams.get("projectName");
+  const languageName = searchParams.get("languageName");
+
+  const { data: localization } = useFetch(
+    "/Language/GetProjectLocalization/ENG_US/BrandingMartE-ShopTerms%26Conditions",
+    "BrandingMartLanguage"
+  );
+  useEffect(() => {
+    if (!localization) return;
+
+    const localFormat = localization.replace(/ObjectId\("([^"]+)"\)/g, '"$1"');
+    const dataObject = JSON.parse(localFormat);
+    delete dataObject._id;
+
+    const merged = DeepMerge(policies, dataObject);
+    setPoliciesLocalize(merged);
+  }, [localization]);
+  console.log(projectName, languageName, fetch);
+
   const renderTextWithLinks = (text) => {
     const emailRegex = /\S+@\S+\.\S+/g;
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -38,8 +63,8 @@ export default function Terms() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* loop over all policy sections */}
-      {Object.keys(policies).map((key, sectionIndex) => {
-        const section = policies[key];
+      {Object.keys(policiesLocalize).map((key, sectionIndex) => {
+        const section = policiesLocalize[key];
 
         return (
           <div key={sectionIndex} className="mb-8">
