@@ -1,10 +1,4 @@
-import { useEffect, useState } from "react";
-import {
-  defaultProjectProxyRoute,
-  GetProjectUrl,
-  request,
-  SetHeaders,
-} from "../request";
+import { GetProjectUrl, SetHeaders } from "../request";
 import UseFetchWithoutBaseUrl from "./UseFetchWithoutBaseUrl";
 
 const useFetch = (url, projectRoute) => {

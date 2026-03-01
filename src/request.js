@@ -43,7 +43,7 @@ export async function SetHeaders() {
   Object.keys(headers).forEach(
     (key) =>
       (headers[key] === undefined || headers[key] === null) &&
-      delete headers[key]
+      delete headers[key],
   );
 
   return headers;

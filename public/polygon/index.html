@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>Polygon Map</title>
+
+    <style>
+      html,
+      body,
+      #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <!-- Google Maps with geometry -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmbyaQLkdJzXnVvZQsBJU_f50YDyD6_ww&libraries=geometry"></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+
+      let lat = parseFloat(urlParams.get("lat")) || 30.03104122832516;
+      let lng = parseFloat(urlParams.get("lng")) || 31.240659768561887;
+      const radius = parseFloat(urlParams.get("radius")) || 100;
+      const clickable = urlParams.get("clickable") === "true";
+
+      let drawing = false;
+      let drawPath = [];
+      let tempPolygon = null;
+      let displayedPolygons = [];
+
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat, lng },
+        zoom: 13,
+      });
+
+      /* =========================
+         📌 UNIVERSAL POST MESSAGE
+         Works on:
+         - Android
+         - iOS
+         - Web iframe
+      ========================= */
+      function sendMessage(data) {
+        const message = JSON.stringify(data);
+
+        // React Native WebView
+        if (window.ReactNativeWebView?.postMessage) {
+          window.ReactNativeWebView.postMessage(message);
+        }
+
+        // Web iframe
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(message, "*");
+        }
+      }
+
+      /* =========================
+         📌 SEND BOUNDS ON ZOOM / MOVE
+      ========================= */
+      map.addListener("idle", function () {
+        const bounds = map.getBounds();
+        if (!bounds) return;
+
+        const ne = bounds.getNorthEast();
+        const sw = bounds.getSouthWest();
+
+        sendMessage({
+          type: "bounds",
+          bounds: {
+            northEastLatitude: ne.lat(),
+            northEastLongitude: ne.lng(),
+            southWestLatitude: sw.lat(),
+            southWestLongitude: sw.lng(),
+          },
+        });
+      });
+
+      /* =========================
+         📍 MARKER + CIRCLE
+      ========================= */
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        map,
+      });
+
+      const circle = new google.maps.Circle({
+        map,
+        center: { lat, lng },
+        radius,
+        fillColor: "#007bff33",
+        strokeColor: "#007bff",
+        strokeWeight: 1,
+      });
+
+      /* =========================
+         ✏️ DRAW POLYGON
+      ========================= */
+      if (clickable) {
+        map.addListener("mousedown", function (e) {
+          drawing = true;
+          drawPath = [{ lat: e.latLng.lat(), lng: e.latLng.lng() }];
+        });
+
+        map.addListener("mousemove", function (e) {
+          if (!drawing) return;
+
+          drawPath.push({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+
+          if (tempPolygon) tempPolygon.setMap(null);
+
+          tempPolygon = new google.maps.Polygon({
+            paths: drawPath,
+            fillColor: "#1E88E5",
+            fillOpacity: 0.3,
+            strokeColor: "#1E88E5",
+            strokeWeight: 2,
+          });
+
+          tempPolygon.setMap(map);
+        });
+
+        map.addListener("mouseup", function () {
+          if (!drawing) return;
+          drawing = false;
+
+          if (drawPath.length > 2) {
+            drawPath.push(drawPath[0]);
+
+            sendMessage({
+              type: "polygon",
+              polygon: drawPath,
+            });
+          }
+        });
+      }
+
+      /* =========================
+         📥 DISPLAY POLYGONS
+      ========================= */
+      function displayPolygons(polygons) {
+        displayedPolygons.forEach((p) => p.setMap(null));
+        displayedPolygons = [];
+
+        polygons.forEach((path) => {
+          const polygon = new google.maps.Polygon({
+            paths: path,
+            fillColor: "#1E88E5",
+            fillOpacity: 0.25,
+            strokeColor: "#1E88E5",
+            strokeWeight: 2,
+          });
+
+          polygon.setMap(map);
+          displayedPolygons.push(polygon);
+        });
+      }
+
+      /* =========================
+         📥 UNIVERSAL RECEIVE HANDLER
+         Supports:
+         - document.addEventListener (old RN)
+         - window.addEventListener (modern RN + web)
+      ========================= */
+      function handleMessage(event) {
+        let data;
+
+        try {
+          data =
+            typeof event.data === "string"
+              ? JSON.parse(event.data)
+              : event.data;
+        } catch (e) {
+          return; // ignore invalid JSON
+        }
+
+        if (!data) return;
+
+        // Update marker position
+        if (data.lat && data.lng) {
+          lat = data.lat;
+          lng = data.lng;
+
+          map.setCenter({ lat, lng });
+          marker.setPosition({ lat, lng });
+          circle.setCenter({ lat, lng });
+        }
+
+        // Display polygons
+        if (data.polygons) {
+          displayPolygons(data.polygons);
+        }
+      }
+
+      document.addEventListener("message", handleMessage); // old RN
+      window.addEventListener("message", handleMessage); // web + modern RN
+    </script>
+  </body>
+</html>
