@@ -144,10 +144,11 @@ export default function PolygonMapParameter({
         const parsed = typeof value === "string" ? JSON.parse(value) : value;
 
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const extractedPolygons = parsed
-            .map((item) => item?.[polygonFieldName])
-            .filter((points) => Array.isArray(points) && points.length > 2);
-
+          const extractedPolygons = parsed.filter(
+            (item) =>
+              Array.isArray(item?.[polygonFieldName]) &&
+              item[polygonFieldName].length > 2,
+          );
           setOldPolygons(extractedPolygons);
           setNewPolygonState(null); // ✅ reset new polygon when value changes
         } else {
@@ -246,27 +247,34 @@ export default function PolygonMapParameter({
 
       {/* ✅ FINAL POLYGONS */}
       {finalPolygons.length > 0 &&
-        finalPolygons.map((polygon, index) =>
-          polygon.length > 2 ? (
-            <Polygon
-              key={index}
-              positions={polygon}
-              pathOptions={{ color: "#1E88E5", fillOpacity: 0.25 }}
-              eventHandlers={{
-                contextmenu: (e) => {
-                  e.originalEvent.preventDefault();
+        finalPolygons.map((polygonObj, index) => (
+          <Polygon
+            key={index}
+            positions={polygonObj[polygonFieldName]}
+            pathOptions={{ color: "#1E88E5", fillOpacity: 0.25 }}
+            eventHandlers={{
+              click: () => {
+                window.parent.postMessage(
+                  {
+                    type: "clickedPolygon",
+                    payload: polygonObj,
+                  },
+                  "*", // or restrict origin
+                );
+                console.log("Selected Polygon Object:", polygonObj);
+              },
+              contextmenu: (e) => {
+                e.originalEvent.preventDefault();
 
-                  setContextMenu({
-                    visible: true,
-                    latlng: e.latlng,
-                    polygonIndex: index,
-                  });
-                },
-              }}
-            />
-          ) : null,
-        )}
-
+                setContextMenu({
+                  visible: true,
+                  latlng: e.latlng,
+                  polygonIndex: index,
+                });
+              },
+            }}
+          />
+        ))}
       {/* RIGHT CLICK MENU */}
       {contextMenu.visible &&
         contextMenu.latlng &&

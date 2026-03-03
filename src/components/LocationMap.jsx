@@ -333,11 +333,12 @@ const LocationMap = () => {
   return (
     <div>
       <div className={locationMap.container}>
-        <MapContainer
+<MapContainer
           center={[lat, lng]}
           zoom={13}
-          className={locationMap.mapContainer}
-          attributionControl={false}
+  className="w-full block"
+  style={{ height: "500px" }} // ✅ MUST have height
+  attributionControl={false}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {clickable && clickAction === "pin" && <MapClickHandler />}
