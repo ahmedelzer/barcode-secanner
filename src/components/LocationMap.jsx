@@ -278,8 +278,10 @@ const LocationMap = () => {
     : null;
 
   const [radius, setRadius] = useState(location[radiusField] || 100);
-  const [lat, setLat] = useState(+location[latitudeField] || 20);
-  const [lng, setLng] = useState(+location[longitudeField] || 24);
+  const [lat, setLat] = useState(+location[latitudeField] || 30.16768827811798);
+  const [lng, setLng] = useState(
+    +location[longitudeField] || 31.348134877841108,
+  );
 
   // -------------------------
   // Map click events
@@ -333,12 +335,12 @@ const LocationMap = () => {
   return (
     <div>
       <div className={locationMap.container}>
-<MapContainer
+        <MapContainer
           center={[lat, lng]}
           zoom={13}
-  className="w-full block"
-  style={{ height: "500px" }} // ✅ MUST have height
-  attributionControl={false}
+          className="w-full block"
+          style={{ height: "500px" }} // ✅ MUST have height
+          attributionControl={false}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {clickable && clickAction === "pin" && <MapClickHandler />}

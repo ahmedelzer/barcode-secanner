@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Polyline, Polygon, useMap, useMapEvents } from "react-leaflet";
+import {
+  Polyline,
+  Polygon,
+  useMap,
+  useMapEvents,
+  Tooltip,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { reverseGeocode } from "../utils/reverseGeocode";
@@ -127,6 +133,7 @@ export default function PolygonMapParameter({
   const [isDrawing, setIsDrawing] = useState(false);
   const [livePath, setLivePath] = useState([]);
   const polygonFieldName = fieldsType.polygon;
+  const areaFieldName = fieldsType.areaName;
   // ✅ NOW ARRAY OF POLYGONS
   const [oldPolygons, setOldPolygons] = useState([]);
   const [newPolygon, setNewPolygonState] = useState(null);
@@ -247,34 +254,45 @@ export default function PolygonMapParameter({
 
       {/* ✅ FINAL POLYGONS */}
       {finalPolygons.length > 0 &&
-        finalPolygons.map((polygonObj, index) => (
-          <Polygon
-            key={index}
-            positions={polygonObj[polygonFieldName]}
-            pathOptions={{ color: "#1E88E5", fillOpacity: 0.25 }}
-            eventHandlers={{
-              click: () => {
-                window.parent.postMessage(
-                  {
-                    type: "clickedPolygon",
-                    payload: polygonObj,
-                  },
-                  "*", // or restrict origin
-                );
-                console.log("Selected Polygon Object:", polygonObj);
-              },
-              contextmenu: (e) => {
-                e.originalEvent.preventDefault();
+        finalPolygons.map((polygonObj, index) => {
+          const centerLat = polygonObj[fieldsType.centerLatitudePoint];
+          const centerLng = polygonObj[fieldsType.centerLongitudePoint];
+          const areaName = polygonObj[areaFieldName];
 
-                setContextMenu({
-                  visible: true,
-                  latlng: e.latlng,
-                  polygonIndex: index,
-                });
-              },
-            }}
-          />
-        ))}
+          return (
+            <Polygon
+              key={index}
+              positions={polygonObj[polygonFieldName]}
+              pathOptions={{ color: "#1E88E5", fillOpacity: 0.25 }}
+              eventHandlers={{
+                click: () => {
+                  window.parent.postMessage(
+                    {
+                      type: "clickedPolygon",
+                      payload: polygonObj,
+                    },
+                    "*",
+                  );
+                },
+                contextmenu: (e) => {
+                  e.originalEvent.preventDefault();
+
+                  setContextMenu({
+                    visible: true,
+                    latlng: e.latlng,
+                    polygonIndex: index,
+                  });
+                },
+              }}
+            >
+              {centerLat && centerLng && (
+                <Tooltip permanent direction="center" className="polygon-label">
+                  {areaName}
+                </Tooltip>
+              )}
+            </Polygon>
+          );
+        })}
       {/* RIGHT CLICK MENU */}
       {contextMenu.visible &&
         contextMenu.latlng &&
